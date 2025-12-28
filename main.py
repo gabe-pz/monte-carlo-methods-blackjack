@@ -57,7 +57,7 @@ def evaluate_inital_hand(card1, card2):
 def evaluate_hand(current_hand, dealt_card): 
     
     if(dealt_card[0] == 'A'):
-        if current_hand[0] < 11:
+        if(current_hand[0] < 11):
             current_hand[0] = 11 + current_hand[0]
             current_hand[1] = True 
             return current_hand
@@ -68,8 +68,8 @@ def evaluate_hand(current_hand, dealt_card):
         
     current_hand[0] = current_hand[0] + dealt_card[0]
 
-    if current_hand[0] > 21:
-        if current_hand[1]:
+    if(current_hand[0] > 21):
+        if(current_hand[1]):
             current_hand[0] = current_hand[0] - 10
             current_hand[1] = False
             return current_hand 
@@ -83,7 +83,7 @@ if __name__ == '__main__':
 
     deck_1 = create_deck()
     shuffled_deck_1 = shuffle_deck(deck_1)     
-
+    
     #Inital Deal
     player_card_1 = shuffled_deck_1.pop() 
     dealer_card_1 = shuffled_deck_1.pop() 
@@ -101,11 +101,7 @@ if __name__ == '__main__':
         print('Winner Winner chicken Dinner') 
 
 
-    if(intial_hand_player != 1):
+    if(intial_hand_dealer != 1):
         print(f'Dealer up card: {dealer_card_2[0]}')  
     else:
         print('Dealer has blackjack, you lose')  
-    
-
-    user_choice = input('Hit or Stick?(H/S): ')
-        
