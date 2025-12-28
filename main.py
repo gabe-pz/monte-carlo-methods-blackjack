@@ -35,7 +35,7 @@ def evaluate_inital_hand(card1, card2):
 
     #Checking blackjack
     if((card1[0] == 'A' and card2[0] == 10) or (card1[0] == 10 and card2[0] == 'A')): 
-        return 1 
+        return [21, useable_ace] 
     
     #Check if have a usable ace
     if(card1[0] == 'A' or card2[0] == 'A'):
@@ -58,7 +58,14 @@ def evaluate_hand(current_hand, dealt_card):
             current_hand[0] = 11 + current_hand[0]
             current_hand[1] = True 
             return current_hand
-        else: 
+        else:
+            
+            #Fix useable ace bug, that is if have card and useable ace and get another ace and then get card that would bust, set both aces to 1 and then take sum there then add on the card got for new sum
+            if(current_hand[1]):
+                current_hand[0] = 1 + current_hand[0]
+                current_hand[1] = True
+                return current_hand            
+
             current_hand[0] = 1 + current_hand[0]
             current_hand[1] = False
             return current_hand
@@ -74,12 +81,15 @@ def evaluate_hand(current_hand, dealt_card):
         return current_hand
         
     return current_hand
-            
-def player_policy(current_hand, dealer_up_card):
-    pass
 
+def fixed_policy(player_hand, dealer_up_card): 
 
-if __name__ == '__main__':
+    if(player_hand[0] > 19):
+        return 'S'
+    else:
+        return 'H'
+
+def run_blackjack():
     player_goes_bust = False
     dealer_goes_bust = False
 
@@ -94,23 +104,20 @@ if __name__ == '__main__':
     player_hand = evaluate_inital_hand(player_card_1, player_card_2) 
     dealer_hand = evaluate_inital_hand(dealer_down_card, dealer_up_card)
 
-    #Check blackjack for player
-    if(player_hand == 1):
-        print('Winner winner chicken dinner') 
-
-    #Check if dealer has blackjack
-    if(dealer_hand == 1):
-        print('Dealer has blackjack, you lose')
+    if(player_hand[0] == 21 and dealer_hand[0] == 21): 
+        return 0
+    
+    if(player_hand[0] == 21):
+        return 1 
+    
+    if(dealer_hand[0] == 21):
+        return -1
         
-    #running game
+    #Players Turn
     while True:
-        print(f'Your hand is: {player_hand[0]}')
-        print(f'Useable ace: {player_hand[1]}') 
-        print(f'Dealer up card: {dealer_up_card[0]}')  
+        policy_choice = fixed_policy(player_hand, dealer_up_card[0])  
 
-        user_choice = input('Hit or stick?: ')
-
-        if(user_choice == 'H'):
+        if(policy_choice == 'H'):
             deck_dealing = create_and_shuffle_deck() 
 
             player_card_dealt = deck_dealing.pop() 
@@ -121,65 +128,43 @@ if __name__ == '__main__':
                 player_goes_bust = True
                 break 
 
-            #If didn't  bust reask if want to hit or stick 
-            print()
-            continue
-        
-        else: 
-            print()
-            if(dealer_hand[0] > 16): 
-                print()
-                print(f'Dealer hand is: {dealer_hand[0]}')
-                print(f'Useable ace: {dealer_hand[1]}') 
-                print('-' * 45) 
-                break
-            while True:
-                print(f'Dealer hand is: {dealer_hand[0]}')
-                print(f'Useable ace: {dealer_hand[1]}') 
-                print('-' * 45) 
-
-                deck_dealing = create_and_shuffle_deck()
-
-                dealer_card_dealt = deck_dealing.pop() 
-
-                dealer_hand = evaluate_hand(dealer_hand, dealer_card_dealt) 
-
-                if(dealer_hand[0] > 21):
-                    dealer_goes_bust = True
-                    break 
-                
-                if(dealer_hand[0] > 16):
-                    print(f'Dealer hand is: {dealer_hand[0]}')
-                    print(f'Useable ace: {dealer_hand[1]}') 
-                    print('-' * 45)  
-                    break
+        else:
             break 
-    
-    print('**********RESULTS**********')
-    #Evaluate results
-    if(player_goes_bust or player_hand[0] < dealer_hand[0] and dealer_goes_bust == False):
-        print(f'Your hand is: {player_hand[0]}')
-        print(f'Useable ace: {player_hand[1]}')
-        print()
-        print(f'Dealer hand is: {dealer_hand[0]}')
-        print(f'Useable ace: {dealer_hand[1]}') 
-        print('-' * 45)
-        print('Results: You Lost')
-    if(dealer_goes_bust or player_hand[0] > dealer_hand[0] and player_goes_bust == False):
-        print(f'Your hand is: {player_hand[0]}')
-        print(f'Useable ace: {player_hand[1]}')
-        print()
-        print(f'Dealer hand is: {dealer_hand[0]}')
-        print(f'Useable ace: {dealer_hand[1]}') 
-        print('-' * 45)
-        print('Results: You Won')
 
-    if(player_hand[0] == dealer_hand[0]):
-        print(f'Your hand is: {player_hand[0]}')
-        print(f'Useable ace: {player_hand[1]}')
-        print()
-        print(f'Dealer hand is: {dealer_hand[0]}')
-        print(f'Useable ace: {dealer_hand[1]}') 
-        print('-' * 45)
-        print('Results: You Tied')
+    #Dealers Turn     
+    if(not player_goes_bust):   
+        while dealer_hand[0] < 17:  
+            deck_dealing = create_and_shuffle_deck()
+
+            dealer_card_dealt = deck_dealing.pop() 
+
+            dealer_hand = evaluate_hand(dealer_hand, dealer_card_dealt) 
+
+            if(dealer_hand[0] > 21):
+                dealer_goes_bust = True
+                break 
+        
+        
+    if player_goes_bust:
+        return -1
+
+    if dealer_goes_bust:
+        return 1
+
+    if player_hand[0] > dealer_hand[0]:
+        return 1
+    elif player_hand[0] < dealer_hand[0]:
+        return -1
+    else:
+        return 0
     
+if __name__ == '__main__':
+    i = 0
+    check_win = 0
+    games_played = 100000
+
+    for x in range(games_played):
+        check_win = run_blackjack() 
+        if(check_win == 1):
+            i += 1
+    print(f'Won {(i / games_played)*100}% of the time with policy') 
