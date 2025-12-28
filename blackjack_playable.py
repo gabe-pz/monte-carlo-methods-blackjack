@@ -16,14 +16,16 @@ def run_blackjack():
     dealer_hand = evaluate_inital_hand(dealer_down_card, dealer_up_card)
 
     if(player_hand[0] == 21 and dealer_hand[0] == 21): 
-        print('You and the dealer both have blackjack, push')
+        return print('You and the dealer both have blackjack, push')
     
     if(player_hand[0] == 21):
-        print('BLACKJACK!')
+        return print('BLACKJACK!')
     
     if(dealer_hand[0] == 21):
-        print('Dealer has blackjack')
-        
+        return print('Dealer has blackjack')
+    
+    print(f'Dealers up card is: {dealer_up_card[0]}') 
+
     #Players Turn
     while True:
         print(f'Your hand is: {player_hand[0]}')
@@ -70,10 +72,14 @@ def run_blackjack():
 
     #Evaluate results
     if player_goes_bust:
+        print(f'Your hand: {player_hand}')
+        print(f'Dealer hand: {dealer_hand}')
         return print('You busted')
          
     
     if dealer_goes_bust:
+        print(f'Your hand: {player_hand}')
+        print(f'Dealer hand: {dealer_hand}')
         return print('Dealer busted')
      
     if player_hand[0] > dealer_hand[0]:
@@ -84,11 +90,11 @@ def run_blackjack():
     elif player_hand[0] < dealer_hand[0]:
         print(f'Your hand: {player_hand}')
         print(f'Dealer hand: {dealer_hand}')
-        print('Thus you win') 
+        print('Thus you Lose') 
     else:
         print(f'Your hand: {player_hand}')
         print(f'Dealer hand: {dealer_hand}')
-        print('Thus you win') 
+        print('Thus you tie') 
 
 if __name__ == '__main__':
     user_choice = 'y'
@@ -97,3 +103,4 @@ if __name__ == '__main__':
         run_blackjack() 
         print() 
         user_choice = input('Would you like to play again(y/n)?: ') 
+        print()
