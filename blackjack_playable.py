@@ -5,11 +5,10 @@ def run_blackjack():
     dealer_goes_bust = False
     
     #Initial deal
-    inital_deck = create_and_shuffle_deck() 
-    player_card_1 = inital_deck.pop()
-    dealer_down_card = inital_deck.pop()
-    player_card_2 = inital_deck.pop()
-    dealer_up_card = inital_deck.pop()
+    player_card_1 = create_and_shuffle_deck()[0]
+    dealer_down_card = create_and_shuffle_deck()[0]
+    player_card_2 = create_and_shuffle_deck()[0]
+    dealer_up_card = create_and_shuffle_deck()[0]
 
     player_hand = evaluate_inital_hand(player_card_1, player_card_2) 
     dealer_hand = evaluate_inital_hand(dealer_down_card, dealer_up_card)
