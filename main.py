@@ -90,15 +90,22 @@ if __name__ == '__main__':
     player_card_2 = shuffled_deck_1.pop() 
     dealer_card_2 = shuffled_deck_1.pop() 
     
-    intial_hand = evaluate_inital_hand(player_card_1, player_card_2) 
+    intial_hand_player = evaluate_inital_hand(player_card_1, player_card_2) 
+    intial_hand_dealer = evaluate_inital_hand(dealer_card_1, dealer_card_2)
 
-    if(intial_hand != 1):
-        print(f'Hand value: {intial_hand[0]}')  
-        print(f'Useable Ace: {intial_hand[1]}')
+    
+    if(intial_hand_player != 1):
+        print(f'Hand value: {intial_hand_player[0]}')  
+        print(f'Useable Ace: {intial_hand_player[1]}')
     else:
         print('Winner Winner chicken Dinner') 
 
-    print(player_card_1)
-    print(player_card_2) 
 
-    print('*' * 150)
+    if(intial_hand_player != 1):
+        print(f'Dealer up card: {dealer_card_2[0]}')  
+    else:
+        print('Dealer has blackjack, you lose')  
+    
+
+    user_choice = input('Hit or Stick?(H/S): ')
+        
