@@ -1,23 +1,22 @@
-import random, time
+import random
 
 
 def create_and_shuffle_deck(): 
     deck = [] 
     suits = ['H', 'D', 'C', 'S']
-    graphical_cards = ['K', 'Q', 'J', 'A'] 
 
-    #Add numerical cards
-    for i in range(2, 11): 
+    #Creating deck
+    for i in range(2, 15): 
         for j in suits: 
-            deck.append((i, j))
-            
-    #Add graphical cards
-    for i in graphical_cards: 
-        for j in suits:
-            if(i != 'A'):
-                deck.append((10, j)) 
+            #Adding Numerical cards
+            if(i < 11):
+                deck.append((i, j))
+            #Adding the face cards
+            elif(i < 14): 
+                deck.append((10, j))
+            #Adding the aces
             else:
-                deck.append(('A', j))
+                deck.append(('A', j)) 
 
     #Shuffling deck 
     for i in range(len(deck))[::-1]:
@@ -89,18 +88,17 @@ def fixed_policy(player_hand, dealer_up_card):
     else:
         return 'H'
 
-def run_blackjack():
+def run_episode():
     player_goes_bust = False
     dealer_goes_bust = False
 
-    inital_deck = create_and_shuffle_deck()
+    #Initial deal
+    player_card_1 = create_and_shuffle_deck()[0]
+    dealer_down_card = create_and_shuffle_deck()[0]
+    player_card_2 = create_and_shuffle_deck()[0]
+    dealer_up_card = create_and_shuffle_deck()[0]
 
-    #Inital Deal
-    player_card_1 = inital_deck.pop() 
-    dealer_down_card = inital_deck.pop() 
-    player_card_2 = inital_deck.pop() 
-    dealer_up_card = inital_deck.pop() 
-
+    #Evaluating initial deal
     player_hand = evaluate_inital_hand(player_card_1, player_card_2) 
     dealer_hand = evaluate_inital_hand(dealer_down_card, dealer_up_card)
 
@@ -118,9 +116,7 @@ def run_blackjack():
         policy_choice = fixed_policy(player_hand, dealer_up_card[0])  
 
         if(policy_choice == 'H'):
-            deck_dealing = create_and_shuffle_deck() 
-
-            player_card_dealt = deck_dealing.pop() 
+            player_card_dealt = create_and_shuffle_deck()[0]  
 
             player_hand = evaluate_hand(player_hand, player_card_dealt) 
 
@@ -133,10 +129,8 @@ def run_blackjack():
 
     #Dealers Turn     
     if(not player_goes_bust):   
-        while dealer_hand[0] < 17:  
-            deck_dealing = create_and_shuffle_deck()
-
-            dealer_card_dealt = deck_dealing.pop() 
+        while dealer_hand[0] < 17: 
+            dealer_card_dealt = create_and_shuffle_deck()[0]
 
             dealer_hand = evaluate_hand(dealer_hand, dealer_card_dealt) 
 
@@ -163,8 +157,3 @@ if __name__ == '__main__':
     check_win = 0
     games_played = 100000
 
-    for x in range(games_played):
-        check_win = run_blackjack() 
-        if(check_win == 1):
-            i += 1
-    print(f'Won {(i / games_played)*100}% of the time with policy') 
