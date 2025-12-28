@@ -122,6 +122,7 @@ if __name__ == '__main__':
                 break 
 
             #If didn't  bust reask if want to hit or stick 
+            print()
             continue
         
         else: 
@@ -153,9 +154,10 @@ if __name__ == '__main__':
                     print('-' * 45)  
                     break
             break 
+    
     print('**********RESULTS**********')
     #Evaluate results
-    if(player_goes_bust or player_hand[0] < dealer_hand[0]):
+    if(player_goes_bust or player_hand[0] < dealer_hand[0] and dealer_goes_bust == False):
         print(f'Your hand is: {player_hand[0]}')
         print(f'Useable ace: {player_hand[1]}')
         print()
@@ -163,7 +165,7 @@ if __name__ == '__main__':
         print(f'Useable ace: {dealer_hand[1]}') 
         print('-' * 45)
         print('Results: You Lost')
-    if(dealer_goes_bust or player_hand[0] > dealer_hand[0]):
+    if(dealer_goes_bust or player_hand[0] > dealer_hand[0] and player_goes_bust == False):
         print(f'Your hand is: {player_hand[0]}')
         print(f'Useable ace: {player_hand[1]}')
         print()
