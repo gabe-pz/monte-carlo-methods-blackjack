@@ -1,4 +1,4 @@
-from blackjack_logic_functions import evaluate_hand, evaluate_inital_hand, create_and_shuffle_deck 
+from blackjack_logic_functions import evaluate_hand, evaluate_inital_hand, create_and_shuffle_deck
 from random import randint 
 
 def fixed_policy(state): 
@@ -9,8 +9,7 @@ def fixed_policy(state):
         return 'H'
 
 def run_episode():
-    states = [] 
-    actions = [] 
+    states_actions = [] 
     
     player_goes_bust = False
     dealer_goes_bust = False
@@ -27,19 +26,16 @@ def run_episode():
 
 
     if(player_hand[0] == 21 and dealer_hand[0] == 21):  
-        states.append((player_hand[0], dealer_up_card[0], player_hand[1])) 
-        actions.append(' ')   
-        return states, actions, 0
+        states_actions.append([(player_hand[0], dealer_up_card[0], player_hand[1]), ' ']) 
+        return states_actions, 0
     
     if(player_hand[0] == 21):
-        states.append((player_hand[0], dealer_up_card[0], player_hand[1])) 
-        actions.append(' ')   
-        return states, actions, 1
+        states_actions.append([(player_hand[0], dealer_up_card[0], player_hand[1]), ' ']) 
+        return states_actions, 1
     
     if(dealer_hand[0] == 21):
-        states.append((player_hand[0], dealer_up_card[0], player_hand[1])) 
-        actions.append(' ')   
-        return states, actions, -1
+        states_actions.append([(player_hand[0], dealer_up_card[0], player_hand[1]), ' ']) 
+        return states_actions, -1
     
     #Always hit between 2-11 
     while player_hand[0] < 12:
@@ -48,31 +44,35 @@ def run_episode():
         player_hand = evaluate_hand(player_hand, player_card_dealt) 
     
     #Note the inital playable state
-    states.append((player_hand[0], dealer_up_card[0], player_hand[1])) 
-    i = 0
+    state = (player_hand[0], dealer_up_card[0], player_hand[1])
 
     #Players Turn
     while True:
-        policy_choice = fixed_policy(states[i])   
+        #Policy choice for sum 12-21
+        policy_choice = fixed_policy(state) 
 
-        #Policy choice for 12-21
         if(policy_choice == 'H'):
-            player_card_dealt = create_and_shuffle_deck()[0]  
+            #Deal card
+            player_card_dealt = create_and_shuffle_deck()[0] 
 
+            #Evaluate hand
             player_hand = evaluate_hand(player_hand, player_card_dealt) 
-
-            states.append((player_hand[0], dealer_up_card[0], player_hand[1]))   
-            actions.append('H') 
-            #Gone to next state
-            i += 1
+            
+            #Check if player goes bust
             if(player_hand[0] > 21): 
+                #Note the state were in and action took that lead to busting
+                states_actions.append([state, 'H'])
                 player_goes_bust = True
-                #Over 21 and states are only, 12-21 
-                states.pop()
-                break 
+                break
+            
+            #If not bust, then simply note the state now in and action took 
+            states_actions.append([state, 'H'])
+            
+            #Update new state
+            state = (player_hand[0], dealer_up_card[0], player_hand[1])
 
         else:
-            actions.append('S')  
+            states_actions.append([(player_hand[0], dealer_up_card[0], player_hand[1]), 'S'])
             break 
 
     #Dealers Turn     
@@ -88,17 +88,18 @@ def run_episode():
         
     #Evaluate results
     if player_goes_bust:
-        return states, actions, -1
+        return states_actions, -1
     if dealer_goes_bust:
-        return states, actions, 1
+        return states_actions, 1
     
     #Checking who is close to 21
     if player_hand[0] > dealer_hand[0]:
-        return states, actions, 1
+        return states_actions, 1
     elif player_hand[0] < dealer_hand[0]:
-        return states, actions, -1
+        return states_actions, -1
     else:
-        return states, actions, 0 
+        return states_actions, 0 
+
 def average_list(lst):
     sum = 0
     for element in lst:
@@ -130,9 +131,9 @@ if __name__ == '__main__':
     
     #Policy Evaulation
     for i in range(episodes): 
-        states_ep, actions_ep, return_ep = run_episode()
+        states_actions_ep, return_ep = run_episode()
 
-        print(actions_ep)
+        print(states_actions_ep) 
         print(return_ep)
         print() 
 
