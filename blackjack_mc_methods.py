@@ -1,4 +1,5 @@
 from blackjack_logic_functions import evaluate_hand, evaluate_inital_hand, create_and_shuffle_deck 
+from random import randint 
 
 def fixed_policy(player_hand, dealer_up_card): 
 
@@ -33,8 +34,18 @@ def run_episode():
     #Players Turn
     while True:
         policy_choice = fixed_policy(player_hand, dealer_up_card[0])  
+        
+        #Always hit between 2-11
+        if(player_hand[0] < 12):
+            player_card_dealt = create_and_shuffle_deck()[0]  
 
-        if(policy_choice == 'H'):
+            player_hand = evaluate_hand(player_hand, player_card_dealt) 
+
+            if(player_hand[0] > 21): 
+                player_goes_bust = True
+                break 
+        #Policy choice for 12-21
+        elif(policy_choice == 'H'):
             player_card_dealt = create_and_shuffle_deck()[0]  
 
             player_hand = evaluate_hand(player_hand, player_card_dealt) 
@@ -60,23 +71,39 @@ def run_episode():
     #Evaluate results
     if player_goes_bust:
         return -1
-
     if dealer_goes_bust:
-        return 1
-
+        return 1 
+    
+    #Checking who is close to 21
     if player_hand[0] > dealer_hand[0]:
         return 1
     elif player_hand[0] < dealer_hand[0]:
         return -1
     else:
         return 0
+    
+def state_value_function(state):
+    return 
+
+def first_visit_mc_prediction():
+    state_value_functions = [] 
+    
 
 if __name__ == '__main__':
 
-    games_won = 0
-    games_played = 100000
-    for i in range(games_played):
-        if(run_episode() == 1):
-            games_won += 1 
+    state_space = [] 
 
-    print(f'Won {(games_won/games_played)*100}% of games') 
+    for bool in [True, False]: 
+        for i in range(12, 22):
+            for j in range(2, 11):
+                if(j == 2):
+                    state_space.append((i, 'A', bool))
+                    state_space.append((i, j, bool))
+                else:
+                    state_space.append((i, j, bool))
+        
+
+    for state in state_space:
+        print(state) 
+    print(len(state_space)) 
+     
