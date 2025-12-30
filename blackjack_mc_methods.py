@@ -1,5 +1,16 @@
 from blackjack_logic_functions import evaluate_hand, evaluate_inital_hand, create_and_shuffle_deck
 from random import randint 
+import matplotlib.pyplot as plt
+import numpy as np
+from mpl_toolkits.mplot3d import Axes3D 
+
+num_episodes = 1000000 
+
+def average_list(lst):
+    sum = 0
+    for element in lst:
+        sum += element 
+    return sum/len(lst)
 
 def fixed_policy(state): 
 
@@ -97,19 +108,11 @@ def run_episode():
     else:
         return states_actions, 0 
 
-def average_list(lst):
-    sum = 0
-    for element in lst:
-        sum += element 
-    return sum/len(lst)
-
-if __name__ == '__main__':
+def state_value_function():
     state_space = [] 
     state_values = {}
     returns = {} 
-
-    num_episodes = 1000000
-
+    
     #Create the state space
     for bool in [True, False]: 
         for i in range(12, 22):
@@ -141,14 +144,54 @@ if __name__ == '__main__':
                 state_values[states_actions_ep[t][0]] = average_list(returns[states_actions_ep[t][0]]) 
                 count += 1      
     
+    return state_values 
 
-
-    #Value function for no useable ace and player sum of 20 against all possible upcards 
-    for j in range(2, 11):
-        if(j == 2):
-            print(f'state value for {(20, 'A', False)} is : {state_values[(20, 'A', False)]}')
-            print(f'state value for {(20, j, False)} is : {state_values[(20, j, False)]}')
-
-        else:
-            print(f'state value for {(20, j, False)} is : {state_values[(20, j, False)]}')
+def get_z_grid(state_dict, useable_ace, X_grid, Y_grid):
+    # Map 1 back to 'A' for the dictionary lookup if necessary
+    def lookup_val(d, p):
+        dealer_key = 'A' if d == 1 else d
+        return state_dict.get((p, dealer_key, useable_ace), 0)
     
+    lookup = np.vectorize(lookup_val)
+    return lookup(X_grid, Y_grid)
+
+def create_plots(X, Y, Z_usable, Z_no_usable):
+    fig = plt.figure(figsize=(16, 8))
+    
+    def setup_ax(pos, Z_data, title):
+        ax = fig.add_subplot(1, 2, pos, projection='3d')
+        
+        ax.plot_surface(X, Y, Z_data, cmap='viridis', edgecolor='none', antialiased=True)
+        
+        ax.set_title(title, fontsize=15)
+        ax.set_xlabel('Dealer Showing')
+        ax.set_ylabel('Player Sum')
+        ax.set_zlabel('State Value')
+        
+        # Format ticks
+        ax.set_xticks(range(1, 11))
+        ax.set_xticklabels(['A', '2', '3', '4', '5', '6', '7', '8', '9', '10'])
+        ax.set_yticks(range(12, 22))
+        
+        ax.view_init(elev=30, azim=-120)
+        return ax
+
+    setup_ax(1, Z_usable, 'Value Function (Usable Ace)')
+    setup_ax(2, Z_no_usable, 'Value Function (No Usable Ace)')
+
+    plt.tight_layout()
+    plt.show()
+
+if __name__ == '__main__':
+    state_value = state_value_function()  
+    
+    # Define ranges
+    dealer_showing = np.arange(1, 11)  
+    player_sum = np.arange(12, 22)     
+
+    X, Y = np.meshgrid(dealer_showing, player_sum)
+
+    Z_usable = get_z_grid(state_value, True, X, Y)
+    Z_no_usable = get_z_grid(state_value, False, X, Y) 
+
+    create_plots(X, Y, Z_usable, Z_no_usable)
