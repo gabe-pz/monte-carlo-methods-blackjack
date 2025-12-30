@@ -26,16 +26,13 @@ def run_episode():
 
 
     if(player_hand[0] == 21 and dealer_hand[0] == 21):  
-        states_actions.append([(player_hand[0], dealer_up_card[0], player_hand[1]), ' ']) 
-        return states_actions, 0
+        return [], -5
     
     if(player_hand[0] == 21):
-        states_actions.append([(player_hand[0], dealer_up_card[0], player_hand[1]), ' ']) 
-        return states_actions, 1
+        return [], -5
     
     if(dealer_hand[0] == 21):
-        states_actions.append([(player_hand[0], dealer_up_card[0], player_hand[1]), ' ']) 
-        return states_actions, -1
+        return [], -5
     
     #Always hit between 2-11 
     while player_hand[0] < 12:
@@ -67,7 +64,7 @@ def run_episode():
             
             #If not bust, then simply note the state now in and action took 
             states_actions.append([state, 'H'])
-            
+
             #Update new state
             state = (player_hand[0], dealer_up_card[0], player_hand[1])
 
@@ -104,14 +101,14 @@ def average_list(lst):
     sum = 0
     for element in lst:
         sum += element 
-    return (sum/len(lst)) 
+    return sum/len(lst)
 
 if __name__ == '__main__':
     state_space = [] 
     state_values = {}
     returns = {} 
 
-    episodes = 1000
+    episodes = 500000
 
     #Create the state space
     for bool in [True, False]: 
@@ -128,14 +125,22 @@ if __name__ == '__main__':
         state_values[state] = randint(-1, 1) 
         returns[state] = [] 
 
-    
+
+    i = 1
     #Policy Evaulation
     for i in range(episodes): 
         states_actions_ep, return_ep = run_episode()
+        if return_ep == -5:
+            continue
+        for t in range(len(states_actions_ep))[::-1]: 
+            if(not(states_actions_ep[t][0] in states_actions_ep[:-i])):
+                returns[states_actions_ep[t][0]].append(return_ep) 
+                state_values[states_actions_ep[t][0]] = average_list(returns[states_actions_ep[t][0]]) 
+                i += 1
 
-        print(states_actions_ep) 
-        print(return_ep)
-        print() 
+
+     
+
 
 
 
