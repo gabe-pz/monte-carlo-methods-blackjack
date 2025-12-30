@@ -1,4 +1,5 @@
 import matplotlib.pyplot as plt
+from matplotlib import cm
 import numpy as np
 
 
@@ -15,26 +16,28 @@ def create_plots(X, Y, Z_usable, Z_no_usable):
     
     def setup_ax(pos, Z_data, title):
         ax = fig.add_subplot(1, 2, pos, projection='3d')
+
+        #Plot surface
+        surf = ax.plot_surface(X, Y, Z_data, cmap=cm.coolwarm, antialiased=False)
         
-        ax.plot_surface(X, Y, Z_data, cmap='viridis', edgecolor='none', antialiased=True)
-        
-        ax.set_title(title, fontsize=15)
+        #Set labels
+        ax.set_title(title, fontsize=17)
         ax.set_xlabel('Dealer Showing')
         ax.set_ylabel('Player Sum')
         ax.set_zlabel('State Value')
         
-        # Format ticks
+        #Set ticks
         ax.set_xticks(range(1, 11))
         ax.set_xticklabels(['A', '2', '3', '4', '5', '6', '7', '8', '9', '10'])
-        ax.set_yticks(range(12, 22))
+        ax.set_yticks(range(12, 22)) 
+
         
-        ax.view_init(elev=30, azim=-120)
         return ax
 
     setup_ax(1, Z_usable, 'Value Function (Usable Ace)')
     setup_ax(2, Z_no_usable, 'Value Function (No Usable Ace)')
 
-    plt.tight_layout()
+    fig.subplots_adjust(wspace=0.45, top=0.85)     
     plt.show()
 
 def plot(state_value_function):

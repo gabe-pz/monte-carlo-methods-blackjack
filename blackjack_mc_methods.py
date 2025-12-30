@@ -11,7 +11,7 @@ def average_list(lst):
 
 def policy_0(state): 
 
-    if(state[0] > 19):
+    if(state[0] > 16):
         return 'S'
     else:
         return 'H'
@@ -145,5 +145,5 @@ def state_value_function(policy):
 
 if __name__ == '__main__':
     state_value = state_value_function(policy_0) 
-    
+
     plot(state_value) 
