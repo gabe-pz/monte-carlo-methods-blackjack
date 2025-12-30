@@ -26,13 +26,13 @@ def run_episode():
 
 
     if(player_hand[0] == 21 and dealer_hand[0] == 21):  
-        return [], -5
+        return [], -2
     
     if(player_hand[0] == 21):
-        return [], -5
+        return [], -2
     
     if(dealer_hand[0] == 21):
-        return [], -5
+        return [], -2
     
     #Always hit between 2-11 
     while player_hand[0] < 12:
@@ -108,7 +108,7 @@ if __name__ == '__main__':
     state_values = {}
     returns = {} 
 
-    episodes = 500000
+    num_episodes = 1000000
 
     #Create the state space
     for bool in [True, False]: 
@@ -126,22 +126,29 @@ if __name__ == '__main__':
         returns[state] = [] 
 
 
-    i = 1
+    
     #Policy Evaulation
-    for i in range(episodes): 
+    for i in range(num_episodes): 
         states_actions_ep, return_ep = run_episode()
-        if return_ep == -5:
+        count = 1
+        
+        if(return_ep == -2):
             continue
+
         for t in range(len(states_actions_ep))[::-1]: 
-            if(not(states_actions_ep[t][0] in states_actions_ep[:-i])):
+            if(not(states_actions_ep[t][0] in states_actions_ep[:-count])):
                 returns[states_actions_ep[t][0]].append(return_ep) 
                 state_values[states_actions_ep[t][0]] = average_list(returns[states_actions_ep[t][0]]) 
-                i += 1
+                count += 1      
+    
 
 
-     
+    #Value function for no useable ace and player sum of 20 against all possible upcards 
+    for j in range(2, 11):
+        if(j == 2):
+            print(f'state value for {(20, 'A', False)} is : {state_values[(20, 'A', False)]}')
+            print(f'state value for {(20, j, False)} is : {state_values[(20, j, False)]}')
 
-
-
-
-
+        else:
+            print(f'state value for {(20, j, False)} is : {state_values[(20, j, False)]}')
+    
