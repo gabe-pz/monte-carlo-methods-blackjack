@@ -1,13 +1,6 @@
 from blackjack_helper_functions import evaluate_hand, evaluate_inital_hand, create_and_shuffle_deck, average_list
 from random import randint 
 
-#Inital policy using for GPI
-def policy_0(state): 
-
-    if(state[0] > 19):
-        return 'S'
-    else:
-        return 'H'
 
 def run_episode(policy, inital_state_action):
     #Initalize list to keep track of actions took in each state
@@ -46,13 +39,13 @@ def run_episode(policy, inital_state_action):
         #Check if player goes bust
         if(player_hand[0] > 21): 
             #Note the state were in and action took that lead to busting
-            states_actions.append([inital_state, inital_action])
+            states_actions.append((inital_state, inital_action))
             player_goes_bust = True
 
         #If dont bust then simply note the new state and add 
         else:
             #If not bust, then simply note the state were in and action took  
-            states_actions.append([inital_state, inital_action]) 
+            states_actions.append((inital_state, inital_action)) 
             
             #Update to state now in
             state = (player_hand[0], dealer_up_card, player_hand[1])
@@ -60,7 +53,7 @@ def run_episode(policy, inital_state_action):
 
     else:
         #Note the state in when choosing to stand
-        states_actions.append([inital_state, inital_action])
+        states_actions.append((inital_state, inital_action))
         state = inital_state 
 
     #Run players turn, only if inital state action caused player to not bust and didnt decide to stand
@@ -68,7 +61,7 @@ def run_episode(policy, inital_state_action):
         #Players Turn
         while True:
             #Policy choice for sum 12-21
-            policy_choice = policy(state) 
+            policy_choice = policy[state]
 
             if(policy_choice == 'H'):
                 #Deal card
@@ -80,19 +73,19 @@ def run_episode(policy, inital_state_action):
                 #Check if player goes bust
                 if(player_hand[0] > 21): 
                     #Note the state were in and action took that lead to busting
-                    states_actions.append([state, 'H'])
+                    states_actions.append((state, 'H'))
                     player_goes_bust = True
                     break
                 
                 #If not bust, then simply note the state now in and action took 
-                states_actions.append([state, 'H'])
+                states_actions.append((state, 'H'))
 
                 #Update new state
                 state = (player_hand[0], dealer_up_card, player_hand[1])
 
             else:
                 #Note the state in when choosing to stand
-                states_actions.append([(player_hand[0], dealer_up_card, player_hand[1]), 'S'])
+                states_actions.append(((player_hand[0], dealer_up_card, player_hand[1]), 'S'))
                 break 
 
     #Dealers Turn     
@@ -120,18 +113,17 @@ def run_episode(policy, inital_state_action):
     else:
         return states_actions, 0 
 
-if __name__ == '__main__':
-    #Initalize
-    state_actions = []  
+def optimal_policy(num_episodes):
+    #Initalize shit
     state_space = [] 
     action_space = ['H', 'S'] 
-    
+    state_actions = []  
+
+    policy_dict = {}    
     returns = {} 
     action_value = {}
     
-    num_episodes = 100 
-
-    #Create the state space
+    #Creating the state space
     for bool in [True, False]: 
         for i in range(12, 22):
             for j in range(2, 11):
@@ -141,17 +133,40 @@ if __name__ == '__main__':
                 else:
                     state_space.append((i, j, bool))  
 
-    #Creating all possible state action pairs     
+    #Creating all possible actions can take in each state
     for action in action_space:
         for state in state_space:
             state_actions.append((state, action)) 
 
-    #Create empty list of returns corresponding to each state action as well as initalizing the action value function for each state action
+    #Inital policy for GPI
+    for state in state_space:
+        if(state[0] > 19):
+            policy_dict[state] = action_space[1]
+        else: 
+            policy_dict[state] = action_space[0] 
+
+    #Create empty list of returns corresponding to each state action pair, as well as initalizing the action value function for each state action pair
     for state_action in state_actions:
         returns[state_action] = [] 
         action_value[state_action] = 0 
-   
+
+
     #Monte carlo ES to estimate optimal policy 
-    for episode in range(num_episodes):
-        inital_state_action = state_actions[randint(0, 399)] 
-        #Finish algo tmr, from here
+    for i in range(num_episodes):
+        inital_state_action = state_actions[randint(0, len(state_actions) - 1)]  
+        state_actions_ep, return_ep = run_episode(policy_dict, inital_state_action) 
+        
+        if(return_ep == -2):
+            continue
+        
+        for t in range(len(state_actions_ep))[::-1]: 
+            if(state_actions_ep[t] not in state_actions_ep[:t]):  
+                returns[state_actions_ep[t]].append(return_ep) 
+                action_value[state_actions_ep[t]] = average_list(returns[state_actions_ep[t]])
+
+                if(action_value[(state_actions_ep[t][0], action_space[0])]  > action_value[(state_actions_ep[t][0], action_space[1])]): 
+                    policy_dict[state_actions_ep[t][0]] = action_space[0] 
+                else:
+                    policy_dict[state_actions_ep[t][0]] = action_space[1]   
+
+    return policy_dict  

@@ -1,13 +1,5 @@
 from blackjack_helper_functions import evaluate_hand, evaluate_inital_hand, create_and_shuffle_deck, average_list
-from blackjack_plotting_results import plot 
 from random import randint 
-
-#Policy estimating state value function for
-def policy_0(state): 
-    if(state[0] > 16):
-        return 'S'
-    else:
-        return 'H'
 
 
 def run_episode(policy):
@@ -44,7 +36,7 @@ def run_episode(policy):
     #Players Turn
     while True:
         #Policy choice for sum 12-21
-        policy_choice = policy(state) 
+        policy_choice = policy[state]
 
         if(policy_choice == 'H'):
             #Deal card
@@ -96,13 +88,12 @@ def run_episode(policy):
     else:
         return states_actions, 0 
 
-def state_value_function(policy):
-    num_episodes = 100000
-
+def state_value_function(policy, num_episodes):
     state_space = [] 
+    
     state_values = {}
     returns = {} 
-    
+
     #Create the state space
     for bool in [True, False]: 
         for i in range(12, 22):
@@ -112,7 +103,7 @@ def state_value_function(policy):
                     state_space.append((i, j, bool))
                 else:
                     state_space.append((i, j, bool))
-    
+     
     #Initalize state value functions and creating empty list to store returns corresponding to each state
     for state in state_space:
         state_values[state] = randint(-1, 1) 
@@ -133,8 +124,3 @@ def state_value_function(policy):
                 count += 1      
     
     return state_values 
-
-if __name__ == '__main__':
-    #Creating and plotting state values for a particular policy
-    state_value = state_value_function(policy_0) 
-    plot(state_value) 
