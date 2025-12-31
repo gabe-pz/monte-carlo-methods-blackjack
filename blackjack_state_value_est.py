@@ -136,35 +136,7 @@ def state_value_function(policy):
     
     return state_values 
 
-
 if __name__ == '__main__':
-    #Initalize
-    state_actions = []  
-    state_space = [] 
-    action_space = ['H', 'S'] 
-    returns = {} 
-    num_episodes = 100 
-
-    #Create the state space
-    for bool in [True, False]: 
-        for i in range(12, 22):
-            for j in range(2, 11):
-                if(j == 2):
-                    state_space.append((i, 'A', bool))
-                    state_space.append((i, j, bool))
-                else:
-                    state_space.append((i, j, bool))  
-
-    #Creating all possible state action pairs     
-    for action in action_space:
-        for state in state_space:
-            state_actions.append([state, action]) 
-
-    #Create empty list of returns corresponding to each state action
-    for state_action in state_actions:
-        returns[state_action] = [] 
-
-    #Monte carlo ES to estimate optimal policy 
-    for episode in range(num_episodes):
-        inital_state_action = state_actions[randint(0, 399)] 
-        #Finish algo tmr, from here
+    #Creating and plotting state values for a particular policy
+    state_value = state_value_function(policy_0) 
+    plot(state_value) 

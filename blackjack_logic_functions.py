@@ -2,6 +2,12 @@ import random
 
 #Logic functions for evaluating hands and creating deck
 
+def average_list(lst):
+    sum = 0
+    for element in lst:
+        sum += element 
+    return sum/len(lst)
+
 def create_and_shuffle_deck(): 
     deck = [] 
     suits = ['H', 'D', 'C', 'S']
