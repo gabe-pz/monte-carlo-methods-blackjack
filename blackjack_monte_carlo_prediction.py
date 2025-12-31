@@ -1,13 +1,14 @@
-from blackjack_logic_functions import evaluate_hand, evaluate_inital_hand, create_and_shuffle_deck, average_list
+from blackjack_helper_functions import evaluate_hand, evaluate_inital_hand, create_and_shuffle_deck, average_list
 from blackjack_plotting_results import plot 
 from random import randint 
 
+#Policy estimating state value function for
 def policy_0(state): 
-
     if(state[0] > 16):
         return 'S'
     else:
         return 'H'
+
 
 def run_episode(policy):
     states_actions = [] 
@@ -24,10 +25,7 @@ def run_episode(policy):
     player_hand = evaluate_inital_hand(player_card_1, player_card_2) 
     dealer_hand = evaluate_inital_hand(dealer_down_card, dealer_up_card)
     
-    #Checking if dealer, player, or both get bj
-    if(player_hand[0] == 21 and dealer_hand[0] == 21):  
-        return [], -2
-    
+    #Checking if player or dealer gets BJ
     if(player_hand[0] == 21):
         return [], -2
     
@@ -41,7 +39,7 @@ def run_episode(policy):
         player_hand = evaluate_hand(player_hand, player_card_dealt) 
     
     #Note the inital playable state
-    state = (player_hand[0], dealer_up_card[0], player_hand[1])
+    state = (player_hand[0], dealer_up_card, player_hand[1])
 
     #Players Turn
     while True:
@@ -66,11 +64,11 @@ def run_episode(policy):
             states_actions.append([state, 'H'])
 
             #Update new state
-            state = (player_hand[0], dealer_up_card[0], player_hand[1])
+            state = (player_hand[0], dealer_up_card, player_hand[1])
 
         else:
             #Note the state in when choosing to stand
-            states_actions.append([(player_hand[0], dealer_up_card[0], player_hand[1]), 'S'])
+            states_actions.append([(player_hand[0], dealer_up_card, player_hand[1]), 'S'])
             break 
 
     #Dealers Turn     
@@ -136,35 +134,7 @@ def state_value_function(policy):
     
     return state_values 
 
-
 if __name__ == '__main__':
-    #Initalize
-    state_actions = []  
-    state_space = [] 
-    action_space = ['H', 'S'] 
-    returns = {} 
-    num_episodes = 100 
-
-    #Create the state space
-    for bool in [True, False]: 
-        for i in range(12, 22):
-            for j in range(2, 11):
-                if(j == 2):
-                    state_space.append((i, 'A', bool))
-                    state_space.append((i, j, bool))
-                else:
-                    state_space.append((i, j, bool))  
-
-    #Creating all possible state action pairs     
-    for action in action_space:
-        for state in state_space:
-            state_actions.append([state, action]) 
-
-    #Create empty list of returns corresponding to each state action
-    for state_action in state_actions:
-        returns[state_action] = [] 
-
-    #Monte carlo ES to estimate optimal policy 
-    for episode in range(num_episodes):
-        inital_state_action = state_actions[randint(0, 399)] 
-        #Finish algo tmr, from here
+    #Creating and plotting state values for a particular policy
+    state_value = state_value_function(policy_0) 
+    plot(state_value) 

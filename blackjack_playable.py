@@ -1,4 +1,4 @@
-from blackjack_logic_functions import evaluate_hand, evaluate_inital_hand, create_and_shuffle_deck 
+from blackjack_helper_functions import evaluate_hand, evaluate_inital_hand, create_and_shuffle_deck 
 
 def run_blackjack():
     player_goes_bust = False
@@ -17,9 +17,6 @@ def run_blackjack():
     print('********** BLACKJACK **********') 
     print()
 
-    if(player_hand[0] == 21 and dealer_hand[0] == 21): 
-        print('Both have 21 - Push!')
-        return
     if(player_hand[0] == 21):
         print('BLACKJACK! You win!')
         return
@@ -27,7 +24,7 @@ def run_blackjack():
         print('Dealer has Blackjack. You lose, womp womp')
         return
 
-    print(f'Dealer shows: {dealer_up_card[0]}')
+    print(f'Dealer shows: {dealer_up_card}') 
     print()
 
     while True:
@@ -42,7 +39,7 @@ def run_blackjack():
         if(user_choice == 'H'):
             player_card_dealt = create_and_shuffle_deck()[0]  
             player_hand = evaluate_hand(player_hand, player_card_dealt) 
-            print(f'You drew: {player_card_dealt[0]}')
+            print(f'You drew: {player_card_dealt}')
             print() 
             if(player_hand[0] > 21): 
                 player_goes_bust = True
@@ -53,7 +50,7 @@ def run_blackjack():
     if(not player_goes_bust):
         print('*****Dealers Turn*****')
         print()
-        print(f'Dealer has: {dealer_hand[0]}', end='')
+        print(f'Dealer has: {dealer_hand}', end='')
         if dealer_hand[1]:
             print(' (useable ace)', end='')
         print()
@@ -62,7 +59,7 @@ def run_blackjack():
         while dealer_hand[0] < 17: 
             dealer_card_dealt = create_and_shuffle_deck()[0]
             dealer_hand = evaluate_hand(dealer_hand, dealer_card_dealt) 
-            print(f'Dealer drew: {dealer_card_dealt[0]} -> now has {dealer_hand[0]}')
+            print(f'Dealer drew: {dealer_card_dealt} -> now has {dealer_hand[0]}')
             if(dealer_hand[0] > 21):
                 dealer_goes_bust = True
                 break 
