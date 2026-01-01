@@ -60,7 +60,6 @@ def plot_policy(policy_dict):
     titles = ['Usable Ace', 'No Usable Ace']
     is_usable_ace = [True, False]
     
-    # Define colors: Red for HIT (0), Blue for STICK (1)
     cmap = ListedColormap(['#ff9999', '#9999ff']) 
 
     for idx, (ax, ace) in enumerate(zip(axes, is_usable_ace)):
@@ -90,11 +89,5 @@ def plot_policy(policy_dict):
         ax.grid(which="minor", color="white", linestyle='-', linewidth=1)
         ax.tick_params(which="minor", bottom=False, left=False)
 
-    # Add a unified legend
-    from matplotlib.patches import Patch
-    legend_elements = [Patch(facecolor='#ff9999', label='HIT'),
-                       Patch(facecolor='#9999ff', label='STICK')]
-    fig.legend(handles=legend_elements, loc='upper center', ncol=2, bbox_to_anchor=(0.5, 1.05))
-    
     plt.tight_layout()
     plt.show()                              

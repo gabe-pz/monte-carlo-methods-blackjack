@@ -13,5 +13,4 @@ Then if the player does not have a natural and neither does the dealer, he then 
 ### Formulating as an MDP
 Blackjack can be quite easily formulated into a finite episodic MDP. Its done by letting each game of blackjack be an episode, and rewards of +1, -1, and 0 and given for winning, losing and drawing, respectively. All rewards within the game are zero, and $\gamma=1$, i.e do not discount. Since the rewards within the game are zero, then the terminal rewards are also the returns.  
 
-The players actions are to either hit or stick. And the states depend upon the players hand and the dealers showing card. Where the players hand consists of his sum and whether or not he holds an ace he could could count as 11 without bussin.  
-
+The players actions are to either hit or stick. And the states depend upon the players hand and the dealers showing card. Where the players hand consists of his sum and whether or not he holds an ace he could could count as 11 without busting, if he can then the ace is said to be usable.  
