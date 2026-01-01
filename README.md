@@ -28,7 +28,7 @@ They are ways to solve the Reinforcement Learning problem, based on averaging sa
  Recall that the value of a state is the expected return, starting from that state and thereafter following $\pi$, and the expected return is the cumulative discounted reward get along the way of doing so.  Then an obvious way to estimate the value of a state from experience only, is to simply average the returns observed, after visits to that state. And then as more returns are observed from visits to each state, the average should converge to the expected value of the state value function.
 
 In the code, the method of first visit Monte Carlo prediction was used. Where first visit methods simply means to estimate the state value function for a state, as the average of the returns following first visits to that particular state. It goes like,
-````
+<pre>
 for  i  in  range(num_episodes):
 
 	states_actions_ep, return_ep  =  run_episode(policy)
@@ -44,7 +44,7 @@ for  i  in  range(num_episodes):
 			returns[states_actions_ep[t][0]].append(return_ep)
 
 			state_values[states_actions_ep[t][0]] =  average_list(returns[states_actions_ep[t][0]])
-````
+</pre>
 This is the implementation of the algorthim for first visit MC prediction presented in chapter 5 of Sutton and Barto's Reinforcement learning. The break down of the code is as such,
 - For each episode in the number of episodes simulating, a list of states, actions, and rewards are generated. But recall for blackjack the only reward is the terminal one, thus that is the complete return for the episode. 
 - Check if actually play a game of blackjack where the player can make a choice, that is if don't automatically win or lose.  
@@ -54,6 +54,3 @@ This is the implementation of the algorthim for first visit MC prediction presen
 
 As this is done for more and more episodes, eventually every state possible that can be visited, will be visited enough times, such that the average of the returns, will converge to the true value of the value of a state. 
  ## Monte Carlo Control 
- 
- 
-
