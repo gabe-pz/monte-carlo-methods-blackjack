@@ -112,15 +112,13 @@ def state_value_function(policy, num_episodes):
     #Policy Evaulation
     for i in range(num_episodes): 
         states_actions_ep, return_ep = run_episode(policy)
-        count = 1                       
         
         if(return_ep == -2):
             continue
         
         for t in range(len(states_actions_ep))[::-1]: 
-            if(not(states_actions_ep[t][0] in states_actions_ep[:-count])):
+            if(states_actions_ep[t][0] not in states_actions_ep[:t]):
                 returns[states_actions_ep[t][0]].append(return_ep) 
-                state_values[states_actions_ep[t][0]] = average_list(returns[states_actions_ep[t][0]]) 
-                count += 1      
+                state_values[states_actions_ep[t][0]] = average_list(returns[states_actions_ep[t][0]])       
     
     return state_values 
