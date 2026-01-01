@@ -1,6 +1,8 @@
 import matplotlib.pyplot as plt
 from matplotlib import cm
 import numpy as np
+from matplotlib.colors import ListedColormap 
+
 
 def get_z_grid(state_dict, useable_ace, X_grid, Y_grid):
     def lookup_val(d, p):
@@ -52,45 +54,47 @@ def plot_state_value(state_value_function):
 
 def plot_policy(policy_dict):
     dealer_cards = ['A', 2, 3, 4, 5, 6, 7, 8, 9, 10]
-    player_sums = np.arange(11, 22)
+    player_sums = np.arange(12, 22)
     
-    fig, axes = plt.subplots(2, 1, figsize=(5, 7))
-    titles = ['Usable\nace', 'No\nusable\nace']
+    fig, axes = plt.subplots(1, 2, figsize=(10, 5))
+    titles = ['Usable Ace', 'No Usable Ace']
     is_usable_ace = [True, False]
     
-    label_coords = [((4.5, 20), (4.5, 13)),((5.0, 20), (7.5, 13))] 
+    # Define colors: Red for HIT (0), Blue for STICK (1)
+    cmap = ListedColormap(['#ff9999', '#9999ff']) 
 
-    fig.suptitle(r'$\pi_*$', fontsize=16, y=0.98)
-    
     for idx, (ax, ace) in enumerate(zip(axes, is_usable_ace)):
-        boundary = []
-        for d in dealer_cards:
-            found_stick = False
-            for p in player_sums:
-                if policy_dict.get((p, d, ace)) == 'S':
-                    boundary.append(p)
-                    found_stick = True
-                    break
-            if not found_stick:
-                boundary.append(22)
+        # Create a grid for the heatmap
+        grid = np.zeros((len(player_sums), len(dealer_cards)))
         
-        x_points = np.arange(len(dealer_cards) + 1) - 0.5
-        boundary_extended = boundary + [boundary[-1]]
-        ax.step(x_points, boundary_extended, where='post', color='black', linewidth=1.5)
+        for i, p in enumerate(player_sums):
+            for j, d in enumerate(dealer_cards):
+                action = policy_dict.get((p, d, ace), 'H')
+                grid[i, j] = 1 if action == 'S' else 0
         
-        ax.text(-2.5, 16, titles[idx], fontsize=10, ha='center', va='center', multialignment='center')
-        ax.set_xticks(np.arange(len(dealer_cards)))
+        # Plot heatmap
+        im = ax.imshow(grid, origin='lower', cmap=cmap, aspect='auto',
+                       extent=[-0.5, 9.5, 11.5, 21.5])
+        
+        # Formatting
+        ax.set_title(titles[idx], fontsize=12, pad=10)
+        ax.set_xticks(range(len(dealer_cards)))
         ax.set_xticklabels(dealer_cards)
-        ax.set_yticks(range(11, 22))
-        ax.set_ylim(10.5, 21.5)
-        ax.set_xlim(-0.5, 9.5)
+        ax.set_yticks(player_sums)
+        ax.set_xlabel('Dealer Showing')
+        if idx == 0: ax.set_ylabel('Player Sum')
         
-        (s_x, s_y), (h_x, h_y) = label_coords[idx]
-        ax.text(s_x,  s_y, 'STICK', fontsize=11, ha='center', va='center')
-        ax.text(h_x, h_y, 'HIT', fontsize=11, ha='center', va='center')
-    
-    fig.text(0.98, 0.5, 'Player sum', fontsize=10, rotation=270, va='center')
-    axes[1].set_xlabel('Dealer showing')
-    plt.subplots_adjust(left=0.2, right=0.85, hspace=0.3, top=0.92)
-    plt.show() 
+        # Add grid lines to highlight intersections
+        ax.set_xticks(np.arange(-.5, 10, 1), minor=True)
+        ax.set_yticks(np.arange(11.5, 22, 1), minor=True)
+        ax.grid(which="minor", color="white", linestyle='-', linewidth=1)
+        ax.tick_params(which="minor", bottom=False, left=False)
 
+    # Add a unified legend
+    from matplotlib.patches import Patch
+    legend_elements = [Patch(facecolor='#ff9999', label='HIT'),
+                       Patch(facecolor='#9999ff', label='STICK')]
+    fig.legend(handles=legend_elements, loc='upper center', ncol=2, bbox_to_anchor=(0.5, 1.05))
+    
+    plt.tight_layout()
+    plt.show()                              
