@@ -3,10 +3,13 @@ from blackjack_monte_carlo_prediction import state_value_function
 from blackjack_plotting_functions import plot_policy, plot_state_value
 
 if __name__ == '__main__':
-    num_episodes = 1000000
+    num_episodes = 5000000
 
+    #Create optimum policy and then state value function for that policy
     optimum_policy = optimal_policy(num_episodes)
-    
-    #Plot them 
+    optimum_state_value = state_value_function(optimum_policy, num_episodes)
+
+
+    print(f"Policy for (12, 4, False): {optimum_policy.get((12, 4, False))}")
     plot_policy(optimum_policy) 
-    
+    plot_state_value(optimum_state_value)

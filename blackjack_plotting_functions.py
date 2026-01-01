@@ -60,10 +60,11 @@ def plot_policy(policy_dict):
     titles = ['Usable Ace', 'No Usable Ace']
     is_usable_ace = [True, False]
     
+    #colors, Red for HIT , Blue for STICK 
     cmap = ListedColormap(['#ff9999', '#9999ff']) 
 
     for idx, (ax, ace) in enumerate(zip(axes, is_usable_ace)):
-        # Create a grid for the heatmap
+        #Create a grid for the heatmap
         grid = np.zeros((len(player_sums), len(dealer_cards)))
         
         for i, p in enumerate(player_sums):
@@ -71,23 +72,25 @@ def plot_policy(policy_dict):
                 action = policy_dict.get((p, d, ace), 'H')
                 grid[i, j] = 1 if action == 'S' else 0
         
-        # Plot heatmap
-        im = ax.imshow(grid, origin='lower', cmap=cmap, aspect='auto',
-                       extent=[-0.5, 9.5, 11.5, 21.5])
+        #Plot heatmap
+        im = ax.imshow(grid, origin='lower', cmap=cmap, aspect='auto', extent=[-0.5, 9.5, 11.5, 21.5])
         
-        # Formatting
+        #Formatting
         ax.set_title(titles[idx], fontsize=12, pad=10)
+
         ax.set_xticks(range(len(dealer_cards)))
         ax.set_xticklabels(dealer_cards)
+        
         ax.set_yticks(player_sums)
+        
         ax.set_xlabel('Dealer Showing')
         if idx == 0: ax.set_ylabel('Player Sum')
         
-        # Add grid lines to highlight intersections
         ax.set_xticks(np.arange(-.5, 10, 1), minor=True)
         ax.set_yticks(np.arange(11.5, 22, 1), minor=True)
-        ax.grid(which="minor", color="white", linestyle='-', linewidth=1)
+        
+        ax.grid(which='minor', color='white', linestyle='-', linewidth=1)
         ax.tick_params(which="minor", bottom=False, left=False)
-
+    
     plt.tight_layout()
-    plt.show()                              
+    plt.show()                 

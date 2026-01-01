@@ -140,7 +140,7 @@ def optimal_policy(num_episodes):
 
     #Inital policy for GPI
     for state in state_space:
-        if(state[0] > 19):
+        if(state[0] > 17):
             policy_dict[state] = action_space[1]
         else: 
             policy_dict[state] = action_space[0] 
