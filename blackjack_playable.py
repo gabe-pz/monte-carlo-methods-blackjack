@@ -19,10 +19,10 @@ def run_blackjack():
 
     if(player_hand[0] == 21):
         print('BLACKJACK! You win!')
-        return
+        return 1
     if(dealer_hand[0] == 21):
         print('Dealer has Blackjack. You lose, womp womp')
-        return
+        return -1
 
     print(f'Dealer shows: {dealer_up_card}') 
     print()
@@ -72,23 +72,40 @@ def run_blackjack():
     
     if player_goes_bust:
         print('You busted. You lose.')
+        return -1 
     elif dealer_goes_bust:
         print('Dealer busted. You win!')
+        return 1
     elif player_hand[0] > dealer_hand[0]:
         print('You win!')
+        return 1
     elif player_hand[0] < dealer_hand[0]:
         print('You lose.')
+        return -1
     else:
         print('Push.')
+        return 0
 
-if __name__ == '__main__':
-    print()
+def main():
     print('Welcome to Blackjack!')
-    
+    wins: int = 0
+    losses: int = 0 
+    pushes: int = 0
+
     user_choice = 'y'
     while user_choice == 'y':
-        run_blackjack() 
+        result = run_blackjack() 
+        if(result == 1):
+            wins += 1 
+        elif(result == -1):
+            losses += 1
+        else:
+            pushes += 1
         print() 
         user_choice = input('Play again? (y/n): ').lower()
         print()
+    print(f'Your Stats: Wins = {wins}, Losses = {losses}, Pushes = {pushes}') 
+
+if __name__ == '__main__':
+    main()
     

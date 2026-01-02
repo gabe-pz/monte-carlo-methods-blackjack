@@ -5,7 +5,7 @@ from random import randint
 def run_episode(policy, inital_state_action):
     #Initalize list to keep track of actions took in each state
     states_actions = [] 
-
+    state = () 
     player_goes_bust = False
     dealer_goes_bust = False
 

@@ -1,5 +1,5 @@
 # Monte Carlo Methods Applied To Blackjack
-### Introduction
+#### Introduction
 The goal of this project is to apply the methods of **Monte Carlo control with exploring starts** to determine the optimal policy and visualize the resulting state-value function, for the card game **Blackjack**. The Methods used in this project are those presented in Chapter 5 of Sutton and Barto’s *Reinforcement Learning*
 ## The Environment
 
@@ -53,9 +53,16 @@ This is the implementation of the algorithm for first visit MC prediction presen
 - Then with that list of returns corresponding to that particular state,the list of returns  is averaged and that value is the new estimate for the state value function, for that state
 
 As this is done for more and more episodes, eventually every state possible that can be visited, will be visited enough times, such that the average of the returns from a particular state, will converge to the true value of the value of that
- state. 
+state.
 
-Note this process is the essentially the same for estimating action value function. Except averaging returns from a particular state action pair to estimate, $q(s,a)$
+For this case after about $2\text{x}10^6$ episodes, the value function for the optimal policy(Explanation in section below) 
+was obtained by using the first-visits methods described above, and it was the following:
+
+<center><a href="https://ibb.co/35HxMZmy"><img src="https://i.ibb.co/sprT6Y9v/optimal-value-function.png" alt="optimal-value-function" border="0" /></a>
+</center>
+
+
+Note this process is the essentially the same for estimating action value function. Only difference is averaging returns from a particular state action pair, such that can estimate the action value, $q(s,a)$
  ## Monte Carlo Control 
  In order to determine the optimal behavior, Generalized Policy Iteration(GPI) is used, adapted for Monte Carlo methods. Recall with GPI one maintains both an approximate policy and an approximate value function. The value function is repeatedly altered to more closely appropriate the value function for the current policy. And the policy is repeatedly improved with respect to the current value function.
 
@@ -101,4 +108,8 @@ And this is the implementation of the algorithm of MC methods  with exploring st
 - Then with the approximated action value function, simply act greedy with respect to it, to pick the action for the particular state at time step $t$ such that the action value function for that state is maximized. That is update the policy $\pi$ to be greedy with respect to the updated $Q$-function:
 $$\pi(s_t) \leftarrow \arg\max_{a} Q(s_t, a)$$
 
-Over many episodes, this iterative process of evaluation and improvement converges to the **optimal policy** $\pi_*$
+Over many episodes, this iterative process of evaluation and improvement converges to the **optimal policy** $\pi_*$.  For this case after about $5\text{x}10^6$ episodes of blackjack, the resulting optimal policy obtained from the above methods was the following:
+<center>
+<a href="https://ibb.co/wFWLDHTT"><img src="https://i.ibb.co/9kTvRXJJ/optimal-policy.png" alt="optimal-policy" border="0" /></a>
+</center>
+Where red means hit and blue means stick. 
