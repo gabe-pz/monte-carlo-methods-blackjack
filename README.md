@@ -1,6 +1,6 @@
 # Monte Carlo Methods Applied To Blackjack
 #### Introduction
-The goal of this project is to apply the methods of **Monte Carlo control with exploring starts** to determine the optimal policy and visualize the resulting state-value function, for the card game **Blackjack**. The Methods used in this project are those presented in chapter 5 of Sutton and Barto's Reinforcement learning
+The goal of this project is to apply the methods of **Monte Carlo control with exploring starts** to determine the optimal policy and visualize the resulting state-value function, for the card game **Blackjack**. The Methods used in this project are those presented in Chapter 5 of Sutton and Barto’s *Reinforcement Learning*
 ## The Environment
 
 ### Game overview  
@@ -45,7 +45,7 @@ for  i  in  range(num_episodes):
 
 			state_values[states_actions_ep[t][0]] =  average_list(returns[states_actions_ep[t][0]])
 ``` 
-This is the implementation of the algorithm for first visit MC prediction presented in chapter 5 of Sutton and Barto's Reinforcement learning. The break down of the code is as such,
+This is the implementation of the algorithm for first visit MC prediction presented in Chapter 5 of Sutton and Barto’s *Reinforcement Learning*. The break down of the code is as such,
 - For each episode in the number of episodes simulating, a list of states, actions, and rewards are generated. But recall for blackjack the only reward is the terminal one, thus that is the complete return for the episode. 
 - Check if actually play a game of blackjack where the player can make a choice, that is if don't automatically win or lose.  
 - For each time step in the list of state action pairs, since applying the first visits method, check if the current state at particular time step occurs in the episode already, then if it does do nothing, and loop until get to the first instance of its occurrence
@@ -93,11 +93,12 @@ for  i  in  range(num_episodes):
 
 			policy_dict[state_actions_ep[t][0]] =  action_space[1]
 ```
-And this is the implementation of the algorithm of MC methods  with exploring starts shown in chapter 5 of Sutton and Barto's Reinforcement learning. The code break down is as such,
-- First randomly pick an initial state action pair to start the episode from, with equal probability from the selection of all possible state action pairs.
-- From this episode generate an episode following the current policy, and note the set of states and actions taken in the episode as well as the terminal reward, which is just the complete return for the episode in this case. 
+And this is the implementation of the algorithm of MC methods  with exploring starts shown in Chapter 5 of Sutton and Barto’s *Reinforcement Learning*. The code break down is as such,
+- First randomly select an initial state-action pair $(S_0, A_0)$ with equal probability to ensure all pairs are visited.
+- Generate a full episode starting from $(S_0, A_0)$ by following the current policy $\pi$ and record the sequence and the total return $G$, which is just the terminal reward.
 - Then for each step of the episode, check if the state action pair at time step t, appears in the episode already, if it does simply do nothing and wait for the first unique occurrence to append anything. If not then append the return got for a particular state action pair, to a list of returns corresponding to that state action pair 
 - With that list of returns for a particular state action pair, average it to estimate the action value function for the state action pair
-- Then with the approximated action value function, simply act greedy with respect to it, to pick the action for the particular state at time step $t$ such that the action value function for that state is maximized 
+- Then with the approximated action value function, simply act greedy with respect to it, to pick the action for the particular state at time step $t$ such that the action value function for that state is maximized. That is update the policy $\pi$ to be greedy with respect to the updated $Q$-function:
+$$\pi(s_t) \leftarrow \arg\max_{a} Q(s_t, a)$$
 
-Then after lots of episodes, eventual will converge to the optimal policy 
+Over many episodes, this iterative process of evaluation and improvement converges to the **optimal policy** $\pi_*$.
