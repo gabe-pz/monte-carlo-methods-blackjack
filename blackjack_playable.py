@@ -1,6 +1,6 @@
 from blackjack_helper_functions import evaluate_hand, evaluate_inital_hand, create_and_shuffle_deck 
 
-def run_blackjack():
+def run_blackjack() -> int:
     player_goes_bust = False
     dealer_goes_bust = False
     
@@ -86,7 +86,7 @@ def run_blackjack():
         print('Push.')
         return 0
 
-def main():
+def main() -> None: 
     print('Welcome to Blackjack!')
     wins: int = 0
     losses: int = 0 

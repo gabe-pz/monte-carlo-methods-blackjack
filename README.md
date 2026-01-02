@@ -15,19 +15,20 @@ Blackjack can be quite easily formulated into a finite episodic MDP. Its done by
 
 The players actions are to either hit or stick. And the states depend upon the players hand and the dealers showing card. Where the players hand consists of his sum and whether or not he holds an ace he could could count as 11 without busting, if he can then the ace is said to be usable.  
 
-In this case that he does have an ace that's usable, it is always counted as 11, for if he counted it as 1 then his sum would be 11 or less, of which there would then be no decision to be made for the action would always be to hit. Therefore the player makes decisions on the basis of three variables, his current sum(12-21), the dealers up card(A-10), and whether or not he holds a usable ace. These three variables make up the players state. Which ends up making a total of 200. 
+In the case that he does have an ace that's usable, it is always counted as 11, for if he counted it as 1 then his sum would be 11 or less, of which there would then be no decision to be made for the action would always be to hit. Therefore the player makes decisions on the basis of three variables, his current sum(12-21), the dealers up card(A-10), and whether or not he holds a usable ace(True, False). These three variables make up the players state. Which ends up making a total of 200 possible states. 
 
-The cards are dealt from an infinite deck, that is with replacement, thus there is no benefit of keeping track of the cards that have already been dealt
+The cards are dealt from an infinite deck, that is they are dealt with replacement, thus there is no benefit of keeping track of the cards that have already been dealt
 
  ## Monte Carlo Prediction 
  ### An overview of Monte Carlo methods
- Monte Carlo methods only require experience from either actual or simulated interaction with the environment, and they do not assume complete knowledge of the environment. Thus with no prior knowledge of the environment, optimal behavior can still be obtained. 
+ Monte Carlo methods only require experience from either actual or simulated interaction with the environment, in order to learn the optimal behavior. They do not assume complete knowledge of the environment. 
+ Thus with no prior knowledge of the environment, optimal behavior can still be obtained. 
  
-They are ways to solve the Reinforcement Learning problem, based on averaging sample returns. And thus to ensure that returns are well defined, episodic tasks are used. Which then means assuming that experience is divided into episodes and that all episodes will eventually terminate. So only after a completion of an episode are value estimated and polices updated. Thus the returns averaging are complete returns.
+Monte Carlo methods are ways to solve the Reinforcement Learning problem, based on averaging sample returns. And to ensure that returns are well defined, episodic tasks are used. Which then means assuming that experience is divided into episodes and that all episodes will eventually terminate. So, only after a completion of an episode are value estimated and polices updated. Thus the returns averaging are complete returns.
  ### Prediction
- Recall that the value of a state is the expected return, starting from that state and thereafter following $\pi$, and the expected return is the cumulative discounted reward get along the way of doing so.  Then an obvious way to estimate the value of a state from experience only, is to simply average the returns observed, after visits to that state. And then as more returns are observed from visits to each state, the average should converge to the expected value of the state value function.
+ Recall that, the value of a state is the expected return, starting from that state and thereafter following policy $\pi$. Where the expected return is the cumulative discounted reward get along the way of following $\pi$ from that state. Then an obvious way to estimate the value of a state from experience only, is to simply average the returns observed, after visits to that state. Then as more returns are observed from visits to each state, the average will converge toward their expected values, effectively forming the state value function
 
-In the code, the method of first visit Monte Carlo prediction was used. Where first visit methods simply means to estimate the state value function for a state, as the average of the returns following first visits to that particular state. The code used to do this is,
+In the code, the method of first visit Monte Carlo prediction was used. Where first visit methods simply means to estimate the state value function for a state, as the average of the returns following first visits to that particular state. The code used to do this is shown below.
 ``` python
 for  i  in  range(num_episodes):
 
@@ -63,7 +64,6 @@ was obtained by using the first-visits methods described above, and it was the f
 <a href="https://ibb.co/35HxMZmy"><img src="https://i.ibb.co/sprT6Y9v/optimal-value-function.png" alt="optimal-value-function" border="0" /></a>
 
 </center>
-
 
 Note this process is the essentially the same for estimating action value function. Only difference is averaging returns from a particular state action pair, such that can estimate the action value, $q(s,a)$
  ## Monte Carlo Control 
@@ -118,5 +118,6 @@ Over many episodes, this iterative process of evaluation and improvement converg
 <a href="https://ibb.co/wFWLDHTT"><img src="https://i.ibb.co/9kTvRXJJ/optimal-policy.png" alt="optimal-policy" border="0" /></a>
 
 </center>
-
 Where red means hit and blue means stick. 
+
+It’s remarkable that the algorithm converges to optimal behavior purely through experience only and without any prior analysis of the games underlying probabilities.
