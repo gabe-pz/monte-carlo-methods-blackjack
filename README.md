@@ -58,7 +58,10 @@ state.
 For this case after about $2\text{x}10^6$ episodes, the value function for the optimal policy(Explanation in section below) 
 was obtained by using the first-visits methods described above, and it was the following:
 
-<center><a href="https://ibb.co/35HxMZmy"><img src="https://i.ibb.co/sprT6Y9v/optimal-value-function.png" alt="optimal-value-function" border="0" /></a>
+<center>
+
+<a href="https://ibb.co/35HxMZmy"><img src="https://i.ibb.co/sprT6Y9v/optimal-value-function.png" alt="optimal-value-function" border="0" /></a>
+
 </center>
 
 
@@ -109,7 +112,11 @@ And this is the implementation of the algorithm of MC methods  with exploring st
 $$\pi(s_t) \leftarrow \arg\max_{a} Q(s_t, a)$$
 
 Over many episodes, this iterative process of evaluation and improvement converges to the **optimal policy** $\pi_*$.  For this case after about $5\text{x}10^6$ episodes of blackjack, the resulting optimal policy obtained from the above methods was the following:
+
 <center>
+
 <a href="https://ibb.co/wFWLDHTT"><img src="https://i.ibb.co/9kTvRXJJ/optimal-policy.png" alt="optimal-policy" border="0" /></a>
+
 </center>
+
 Where red means hit and blue means stick. 
