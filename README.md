@@ -1,6 +1,6 @@
 # Monte Carlo Methods Applied To Blackjack
 #### Introduction
-The goal of this project is to apply the methods of **Monte Carlo control with exploring starts** to determine the optimal policy and visualize the resulting state-value function, for the card game **Blackjack**. The Methods used in this project are those presented in Chapter 5 of Sutton and Barto’s *Reinforcement Learning*
+The goal of this project was to apply the methods of **Monte Carlo control with exploring starts** to determine the optimal policy and visualize the resulting state value function, for the card game **Blackjack**. The Methods used in this project are those presented in Chapter 5 of Sutton and Barto’s *Reinforcement Learning*
 ## The Environment
 
 ### Game overview  
