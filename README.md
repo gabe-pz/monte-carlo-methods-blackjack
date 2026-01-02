@@ -101,4 +101,4 @@ And this is the implementation of the algorithm of MC methods  with exploring st
 - Then with the approximated action value function, simply act greedy with respect to it, to pick the action for the particular state at time step $t$ such that the action value function for that state is maximized. That is update the policy $\pi$ to be greedy with respect to the updated $Q$-function:
 $$\pi(s_t) \leftarrow \arg\max_{a} Q(s_t, a)$$
 
-Over many episodes, this iterative process of evaluation and improvement converges to the **optimal policy** $\pi_*$.
+Over many episodes, this iterative process of evaluation and improvement converges to the **optimal policy** $\pi_*$
