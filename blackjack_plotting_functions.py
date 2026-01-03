@@ -1,12 +1,12 @@
-import matplotlib.pyplot as plt
+import matplotlib.pyplot as plt # type: ignore
 from matplotlib import cm
-import numpy as np
-from matplotlib.colors import ListedColormap 
-
+import numpy as np 
+from matplotlib.colors import ListedColormap # type: ignore
+from matplotlib.colors import LightSource 
 
 def get_z_grid(state_dict, useable_ace, X_grid, Y_grid):
     def lookup_val(d, p):
-        dealer_key = 'A' if d == 1 else d
+        dealer_key = 1 if d == 1 else d
         return state_dict.get((p, dealer_key, useable_ace), 0)
     
     lookup = np.vectorize(lookup_val)
@@ -14,12 +14,15 @@ def get_z_grid(state_dict, useable_ace, X_grid, Y_grid):
 
 def create_plots(X, Y, Z_usable, Z_no_usable):
     fig = plt.figure(figsize=(16, 8))
+    ls = LightSource(azdeg=315, altdeg=45) 
     
     def setup_ax(pos, Z_data, title):
         ax = fig.add_subplot(1, 2, pos, projection='3d')
 
         #Plot surface
-        surf = ax.plot_surface(X, Y, Z_data, cmap=cm.coolwarm, antialiased=False)
+        rgb = ls.shade(Z_data, cmap=cm.coolwarm, vert_exag=0.1, blend_mode='soft') # type: ignore
+        surf = ax.plot_surface(X, Y, Z_data, facecolors=rgb, 
+                            antialiased=True, shade=False)
         
         #Set labels
         ax.set_title(title, fontsize=17)
@@ -41,6 +44,7 @@ def create_plots(X, Y, Z_usable, Z_no_usable):
     fig.subplots_adjust(wspace=0.45, top=0.85)     
     plt.show()
 
+
 def plot_state_value(state_value_function):
     dealer_showing = np.arange(1, 11)  
     player_sum = np.arange(12, 22)     
@@ -52,8 +56,9 @@ def plot_state_value(state_value_function):
 
     create_plots(X, Y, Z_usable, Z_no_usable)  
 
-def plot_policy(policy_dict):
-    dealer_cards = ['A', 2, 3, 4, 5, 6, 7, 8, 9, 10]
+#Plotting policy
+def plot_policy(policy_dict) -> None:
+    dealer_cards = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
     player_sums = np.arange(12, 22)
     
     fig, axes = plt.subplots(1, 2, figsize=(10, 5))
@@ -69,8 +74,8 @@ def plot_policy(policy_dict):
         
         for i, p in enumerate(player_sums):
             for j, d in enumerate(dealer_cards):
-                action = policy_dict.get((p, d, ace), 'H')
-                grid[i, j] = 1 if action == 'S' else 0
+                action = policy_dict.get((p, d, ace))
+                grid[i, j] = 1 if action == 1 else 0
         
         #Plot heatmap
         im = ax.imshow(grid, origin='lower', cmap=cmap, aspect='auto', extent=[-0.5, 9.5, 11.5, 21.5])
@@ -79,8 +84,8 @@ def plot_policy(policy_dict):
         ax.set_title(titles[idx], fontsize=12, pad=10)
 
         ax.set_xticks(range(len(dealer_cards)))
-        ax.set_xticklabels(dealer_cards)
-        
+        ax.set_xticklabels(['A', 2, 3, 4, 5, 6, 7, 8, 9, 10])
+
         ax.set_yticks(player_sums)
         
         ax.set_xlabel('Dealer Showing')

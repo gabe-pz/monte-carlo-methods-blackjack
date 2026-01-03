@@ -91,20 +91,27 @@ def main() -> None:
     wins: int = 0
     losses: int = 0 
     pushes: int = 0
+    
+    user_choice: str = 'y'
 
-    user_choice = 'y'
-    while user_choice == 'y':
-        result = run_blackjack() 
+    while(user_choice == 'y'):
+        result: int = run_blackjack() 
+
         if(result == 1):
             wins += 1 
         elif(result == -1):
             losses += 1
         else:
             pushes += 1
+    
         print() 
-        user_choice = input('Play again? (y/n): ').lower()
+        user_choice = input('Play again? (y/n): ').lower() 
         print()
+
+    games_played: int = wins + losses + pushes
+    
     print(f'Your Stats: Wins = {wins}, Losses = {losses}, Pushes = {pushes}') 
+    print(f'Thats a {int((wins/games_played)*100)}% win rate')
 
 if __name__ == '__main__':
     main()
