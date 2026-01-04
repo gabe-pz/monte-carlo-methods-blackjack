@@ -93,15 +93,13 @@ for  i  in  range(num_episodes):
 
 			action_value[state_actions_ep[t]] =  average_list(returns[state_actions_ep[t]])
 
-		  
+			if(action_value[(state_actions_ep[t][0], action_space[0])] >  action_value[(state_actions_ep[t][0], action_space[1])]):
+		
+				policy_dict[state_actions_ep[t][0]] =  action_space[0]
 
-		if(action_value[(state_actions_ep[t][0], action_space[0])] >  action_value[(state_actions_ep[t][0], action_space[1])]):
-	
-			policy_dict[state_actions_ep[t][0]] =  action_space[0]
+			else:
 
-		else:
-
-			policy_dict[state_actions_ep[t][0]] =  action_space[1]
+				policy_dict[state_actions_ep[t][0]] =  action_space[1]
 ```
 And this is the implementation of the algorithm of MC methods  with exploring starts shown in Chapter 5 of Sutton and Barto’s *Reinforcement Learning*. The code break down is as such,
 - First randomly select an initial state-action pair $(S_0, A_0)$ with equal probability to ensure all pairs are visited.
